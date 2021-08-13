@@ -1,0 +1,17 @@
+version: '3'
+services:
+  takin-mysql:
+    image: takin-mysql:1.0
+    environment:
+      MYSQL_ROOT_PASSWORD: shulie@2020
+  takin-clickhouse:
+    image: takin-clickhouse:1.0
+    ulimits: 
+      nofile: 
+        soft: 262144
+        hard: 262144
+    environment:
+      CLICKHOUSE_PASSWORD: shulie@2020
+  takin-redis:
+    image: redis
+    command: redis-server --requirepass shulie@2020
