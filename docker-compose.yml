@@ -15,3 +15,16 @@ services:
   takin-redis:
     image: redis
     command: redis-server --requirepass shulie@2020
+  takin-influxdb:
+    image: influxdb:1.8.9
+    environment:
+      INFLUXDB_HTTP_AUTH_ENABLED: "true"
+      INFLUXDB_ADMIN_USER: root
+      INFLUXDB_ADMIN_PASSWORD: shulie@2020
+      INFLUXDB_DB: jmeter
+  takin-nginx:
+    image: takin-nginx:1.0
+    ports:
+      - "80:80"
+  takin-zookeeper:
+    image: zookeeper
