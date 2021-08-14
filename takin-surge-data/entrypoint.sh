@@ -1,36 +1,35 @@
 #!/bin/bash
-echo "installing"
-
 set -e
+PATH=$PATH:/usr/lib/jvm/default-jvm/bin/
+export PATH
 
-rm -rf deploy.properties
+cd /app
 
-jar xvf  surge-deploy-pradar-storm-1.0-SNAPSHOT.jar deploy.properties
+jar -xvf surge-deploy-1.0-jar-with-dependencies.jar deploy.properties
 
-sed -i "s/pradar.host.zk01:2181,pradar.host.zk02:2181,pradar.host.zk03:2181/$ZK_HOSTS/g" deploy.properties
+sed -i -e "s/127.0.0.1:2181/$ZK_HOSTS/g" deploy.properties
 
-sed -i "s/pradar.host.influxdb:8086/$INFLUXDB_HOSTS/g" deploy.properties
+sed -i -e "s/127.0.0.1:8086/$INFLUXDB_HOST/g" deploy.properties
 
-sed -i "s/config.influxdb.username=pradar/config.influxdb.username=$INFLUXDB_USERNAME/g" deploy.properties
+sed -i -e "s/config.influxdb.username\=root/config.influxdb.username\=$INFLUXDB_USERNAME/g" deploy.properties
 
-sed -i "s/config.influxdb.password=pradar/config.influxdb.password=$INFLUXDB_PASSOWORD/g" deploy.properties
+sed -i -e "s/config.influxdb.password=shulie@2020/config.influxdb.password=$INFLUXDB_PASSOWORD/g" deploy.properties
 
-sed -i "s/pradar.host.troweb/$TRO_HOST/g" deploy.properties
+sed -i -e  "s/tro.url.ip=127.0.0.1/tro.url.ip=$TRO_WEB_HOST/g" deploy.properties
 
-sed -i "s/pradar.host.clickhouse01:8123,pradar.host.clickhouse02:8123/$CK_HOSTS/g" deploy.properties
+sed -i -e "s/127.0.0.1:8123/$CLICKHOUSE_HOST/g" deploy.properties
 
-sed -i "s/config.clickhouse.password=rU4zGjA\/config.clickhouse.password=/$CK_PASSWORD/g" deploy.properties
+sed -i -e  "s/config.clickhouse.password=rU4zGjA\/config.clickhouse.password=/$CLICKHOUSE_PASSWORD/g" deploy.properties
 
-sed -i "s/pradar.host.mysql.amdb:3306/$MYSQL_HOSTS/g" deploy.properties
+sed -i -e "s/127.0.0.1:3306/$MYSQL_HOST:$MYSQL_PORT/g" deploy.properties
 
-sed -i "s/config.mysql.userName=root/config.mysql.userName=$MYSQL_USERNAME/g" deploy.properties
+sed -i -e "s/config.mysql.userName=root/config.mysql.userName=$MYSQL_USERNAME/g" deploy.properties
 
-sed -i "s/config.mysql.password=shulie@2020/config.mysql.password=$MYSQL_PASSOWORD/g" deploy.properties
+sed -i -e  "s/config.mysql.password=shulie@2020/config.mysql.password=$MYSQL_PASSOWORD/g" deploy.properties
 
-sed -i "s/pradar.host.amdb:10032/$AMDB_HOST/g" deploy.properties
+cat deploy.properties
 
-jar  -uvf surge-deploy-pradar-storm-1.0-SNAPSHOT.jar deploy.properties
+jar -uvf surge-deploy-1.0-jar-with-dependencies.jar deploy.properties
 
-nohup java -cp  surge-deploy-pradar-storm-1.0-SNAPSHOT.jar  io.shulie.surge.data.deploy.pradar.bootstrap.PradarTopologyBootStrap > pradar.log &
 
-echo "finished"
+java -cp surge-deploy-1.0-jar-with-dependencies.jar io.shulie.surge.data.deploy.pradar.config.PradarSupplierConfiguration $HOST_MAP

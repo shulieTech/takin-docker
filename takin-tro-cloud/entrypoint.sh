@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+mkdir -p /app/script/tmp
+
 params=""
 
 if [ ! -z "$MYSQL_HOST" ]; then

@@ -138,6 +138,10 @@ docker run -d --name takin-tro-web \
 -e REDIS_HOST=takin-redis \
 -e REDIS_PORT=6379 \
 -e REDIS_PASSOWORD=shulie@2020 \
+-e INFLUXDB_HOST=takin-influxdb \
+-e INFLUXDB_PORT=8086 \
+-e INFLUXDB_USERNAME=root \
+-e INFLUXDB_PASSOWORD=shulie@2020 \
 -e TRO_CLOUD_HOST=takin-tro-cloud:10010 \
 -e AMDB_HOST=http://takin-amdb:10032 \
 -e ZK_HOSTS=takin-zookeeper:2181 \
@@ -260,19 +264,27 @@ docker build --force-rm --no-cache -t takin-surge-data:1.0 .
 
 ###### 镜像启动
 ```
-docker run -d --name takin-surge -p 29900-29999:29900-29999 \
--e MYSQL_HOST=takin-mysql \
--e MYSQL_PORT=3306 \
+docker run -d --name takin-surge-data -p 29900-29999:29900-29999 \
+-e MYSQL_HOST=takin-mysql:3306 \
 -e MYSQL_USERNAME=root \
 -e MYSQL_PASSOWORD=shulie@2020 \
--e INFLUXDB_HOST= \
--e INFLUXDB_PORT= \
--e INFLUXDB_USERNAME= \
--e INFLUXDB_PASSOWORD= \
--e TROWEB_HOST= \
--e CK_HOSTS= \
--e AMDB_HOST=http://takin-amdb:10032 \
-takin-surge-data:1.0 .
+-e INFLUXDB_HOST=takin-influxdb:8086 \
+-e INFLUXDB_USERNAME=root \
+-e INFLUXDB_PASSOWORD=shulie@2020 \
+-e CLICKHOUSE_HOST=takin-clickhouse:8123 \
+-e CLICKHOUSE_PASSOWORD=shulie@2020 \
+-e TRO_HOST=takin-tro-web \
+-e AMDB_HOST=takin-amdb:10032 \
+-e ZK_HOSTS=takin-zookeeper:2181 \
+-e HOST_MAP={"127.0.0.1":"localhost"} \
+--link takin-mysql:takin-mysql \
+--link takin-influxdb:takin-influxdb \
+--link takin-clickhouse:takin-clickhouse \
+--link takin-tro-web:takin-tro-web \
+--link takin-amdb:takin-amdb \
+--link takin-zookeeper:takin-zookeeper \
+takin-surge-data:1.0
+
 ```
 
 --link takin-tro-amdb:takin-tro-amdb \
@@ -332,10 +344,12 @@ docker run -d --name takin-amdb -p 10032:10032 \
 -e INFLUXDB_PORT=8086 \
 -e INFLUXDB_USERNAME=root \
 -e INFLUXDB_PASSOWORD=shulie@2020 \
+-e ZK_HOSTS=takin-zookeeper:2181 \
 -e EXT_CONFIG="1234=12123" \
 --link takin-mysql:takin-mysql \
 --link takin-influxdb:takin-influxdb \
 --link takin-clickhouse:takin-clickhouse \
+--link takin-zookeeper:takin-zookeeper \
 takin-amdb:1.0
 
 ```

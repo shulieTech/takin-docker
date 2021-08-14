@@ -1,10 +1,13 @@
-version: '3'
+version: '3.2'
 services:
   takin-mysql:
+    container_name: takin-mysql
     image: takin-mysql:1.0
     environment:
       MYSQL_ROOT_PASSWORD: shulie@2020
+
   takin-clickhouse:
+    container_name: takin-clickhouse
     image: takin-clickhouse:1.0
     ulimits: 
       nofile: 
@@ -12,19 +15,154 @@ services:
         hard: 262144
     environment:
       CLICKHOUSE_PASSWORD: shulie@2020
+
   takin-redis:
+    container_name: takin-redis
     image: redis
     command: redis-server --requirepass shulie@2020
+
   takin-influxdb:
+    container_name: takin-influxdb
     image: influxdb:1.8.9
     environment:
       INFLUXDB_HTTP_AUTH_ENABLED: "true"
       INFLUXDB_ADMIN_USER: root
       INFLUXDB_ADMIN_PASSWORD: shulie@2020
       INFLUXDB_DB: jmeter
+
   takin-nginx:
+    container_name: takin-nginx
     image: takin-nginx:1.0
     ports:
-      - "80:80"
+      - "8090:80"
+
   takin-zookeeper:
+    container_name: takin-zookeeper
     image: zookeeper
+
+
+  takin-tro-web:
+    container_name: takin-tro-web
+    image: takin-tro-web:1.0
+    ports:
+      - "10008:10008"
+    environment:
+      MYSQL_HOST: takin-mysql
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_PASSOWORD: shulie@2020
+      INFLUXDB_HOST: takin-influxdb
+      INFLUXDB_PORT: 8086
+      INFLUXDB_USERNAME: root
+      INFLUXDB_PASSOWORD: shulie@2020
+      REDIS_HOST: takin-redis
+      REDIS_PORT: 6379
+      REDIS_PASSOWORD: shulie@2020
+      TRO_CLOUD_HOST: takin-tro-cloud:10010
+      AMDB_HOST: http://takin-amdb:10032
+      ZK_HOSTS: takin-zookeeper:2181
+      EXT_CONFIG: 1234=12123
+    depends_on:
+      - takin-mysql
+      - takin-redis
+      - takin-influxdb
+      - takin-zookeeper
+      - takin-tro-cloud
+      - takin-amdb
+    volumes:
+      - type: volume
+        source: data-volume
+        target: /app/script
+
+
+
+  takin-tro-cloud:
+    container_name: takin-tro-cloud
+    image: takin-tro-cloud:1.0
+    ports:
+      - "10010:10010"
+    environment:
+      MYSQL_HOST: takin-mysql
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_PASSOWORD: shulie@2020
+      REDIS_HOST: takin-redis
+      REDIS_PORT: 6379
+      REDIS_PASSOWORD: shulie@2020
+      INFLUXDB_HOST: takin-influxdb
+      INFLUXDB_PORT: 8086
+      INFLUXDB_USERNAME: root
+      INFLUXDB_PASSOWORD: shulie@2020
+      EXT_CONFIG: 1234=12123
+    depends_on:
+      - takin-mysql
+      - takin-redis
+      - takin-influxdb
+    volumes:
+      - type: volume
+        source: data-volume
+        target: /app/script
+
+  takin-amdb:
+    container_name: takin-amdb
+    image: takin-amdb:1.0
+    ports:
+      - "10032:10032"
+    environment:
+      MYSQL_HOST: takin-mysql
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_PASSOWORD: shulie@2020
+      REDIS_HOST: takin-redis
+      REDIS_PORT: 6379
+      REDIS_PASSOWORD: shulie@2020
+      INFLUXDB_HOST: takin-influxdb
+      INFLUXDB_PORT: 8086
+      INFLUXDB_USERNAME: root
+      INFLUXDB_PASSOWORD: shulie@2020
+      CLICKHOUSE_HOST: takin-clickhouse
+      CLICKHOUSE_PORT: 8123
+      CLICKHOUSE_USERNAME: root
+      ICLICKHOUSE_PASSOWORD: shulie@2020
+      ZK_HOSTS: takin-zookeeper:2181
+      EXT_CONFIG: 1234=12123
+    depends_on:
+      - takin-mysql
+      - takin-redis
+      - takin-influxdb
+      - takin-zookeeper
+
+  takin-surge-data:
+    container_name: takin-surge-data
+    image: takin-surge-data:1.0
+    ports:
+      - "29900-29999:29900-29999"
+    environment:
+      MYSQL_HOST: takin-mysql
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_PASSOWORD: shulie@2020
+      REDIS_HOST: takin-redis
+      REDIS_PORT: 6379
+      REDIS_PASSOWORD: shulie@2020
+      CLICKHOUSE_HOST: takin-clickhouse:8123
+      CLICKHOUSE_PASSOWORD: shulie@2020
+      INFLUXDB_HOST: takin-influxdb:8086
+      INFLUXDB_PORT: 8086
+      INFLUXDB_USERNAME: root
+      INFLUXDB_PASSOWORD: shulie@2020
+      TRO_WEB_HOST: takin-tro-web
+      AMDB_HOST: takin-amdb:10032
+      ZK_HOSTS: takin-zookeeper:2181
+      HOST_MAP: '{"172.16.0.11":"127.0.0.1"}'
+    depends_on:
+      - takin-mysql
+      - takin-redis
+      - takin-influxdb
+      - takin-zookeeper
+      - takin-clickhouse
+      - takin-tro-web
+      - takin-amdb
+
+volumes:
+  data-volume:

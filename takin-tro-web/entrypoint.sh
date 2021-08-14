@@ -31,6 +31,18 @@ if [ ! -z "$REDIS_PASSWORD" ]; then
 	params="$params --resource.redis.password=$REDIS_PASSWORD"
 fi
 
+if [[ ! -z "$INFLUXDB_HOST" && ! -z "$INFLUXDB_PORT" ]]; then
+        params="$params --resource.influxdb.url=http://$INFLUXDB_HOST:$INFLUXDB_PORT"
+fi
+
+if [ ! -z "$INFLUXDB_USERNAME" ]; then
+        params="$params --resource.influxdb.user=$INFLUXDB_USERNAME"
+fi
+
+if [ ! -z "$INFLUXDB_PASSOWORD" ]; then
+        params="$params --resource.influxdb.password=$INFLUXDB_PASSOWORD"
+fi
+
 if [ ! -z "$TRO_CLOUD_HOST" ]; then
 	params="$params --trocloud.out.url=$TRO_CLOUD_HOST"
 fi

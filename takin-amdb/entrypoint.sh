@@ -24,7 +24,7 @@ if [ ! -z "$INFLUXDB_USERNAME" ]; then
 fi
 
 if [ ! -z "$INFLUXDB_PASSOWORD" ]; then
-	params="$params --zookeeper.server=$INFLUXDB_PASSOWORD"
+	params="$params --influx.password=$INFLUXDB_PASSOWORD"
 fi
 
 if [ ! -z "$ZK_HOSTS" ]; then
