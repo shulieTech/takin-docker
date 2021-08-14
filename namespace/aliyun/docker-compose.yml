@@ -8,7 +8,7 @@ services:
 
   takin-clickhouse:
     container_name: takin-clickhouse
-    image: shulie-takin/takin-clickhouse
+    image: registry.cn-hangzhou.aliyuncs.com/shulie-takin/takin-clickhouse
     ulimits: 
       nofile: 
         soft: 262144
