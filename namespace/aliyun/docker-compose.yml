@@ -33,6 +33,8 @@ services:
   takin-nginx:
     container_name: takin-nginx
     image: registry.cn-hangzhou.aliyuncs.com/shulie-takin/takin-nginx
+    environment:
+      TAKIN_TRO_WEB_URL: 127.0.0.1
     ports:
       - "8090:80"
 
