@@ -35,7 +35,9 @@ services:
     image: takin-nginx:1.0
     ports:
       - "8090:80"
-
+    environment:
+      TAKIN_TRO_WEB_URL: 127.0.0.1
+      
   takin-zookeeper:
     container_name: takin-zookeeper
     image: zookeeper
