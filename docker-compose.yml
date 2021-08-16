@@ -79,8 +79,6 @@ services:
   takin-tro-cloud:
     container_name: takin-tro-cloud
     image: takin-tro-cloud:1.0
-    ports:
-      - "10010:10010"
     environment:
       MYSQL_HOST: takin-mysql
       MYSQL_PORT: 3306
@@ -106,8 +104,6 @@ services:
   takin-amdb:
     container_name: takin-amdb
     image: takin-amdb:1.0
-    ports:
-      - "10032:10032"
     environment:
       MYSQL_HOST: takin-mysql
       MYSQL_PORT: 3306
