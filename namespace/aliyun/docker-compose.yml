@@ -40,7 +40,7 @@ services:
 
   takin-zookeeper:
     container_name: takin-zookeeper
-    image: zookeeper
+    image: zookeeper:3.5
     ports:
       - "2181:2181"
 
@@ -77,13 +77,9 @@ services:
         source: data-volume
         target: /app/script
 
-
-
   takin-tro-cloud:
     container_name: takin-tro-cloud
     image: registry.cn-hangzhou.aliyuncs.com/shulie-takin/takin-tro-cloud
-    ports:
-      - "10010:10010"
     environment:
       MYSQL_HOST: takin-mysql
       MYSQL_PORT: 3306
@@ -109,8 +105,6 @@ services:
   takin-amdb:
     container_name: takin-amdb
     image: registry.cn-hangzhou.aliyuncs.com/shulie-takin/takin-amdb
-    ports:
-      - "10032:10032"
     environment:
       MYSQL_HOST: takin-mysql
       MYSQL_PORT: 3306
