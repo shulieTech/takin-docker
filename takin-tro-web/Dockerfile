@@ -10,6 +10,8 @@ COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["sh","/entrypoint.sh"]
 
+#CMD ["tail","-f",">","/dev/null"]
+
 VOLUME ["/app/script"]
 
 EXPOSE 10008

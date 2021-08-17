@@ -59,4 +59,10 @@ if [ ! -z "$EXT_CONFIG" ]; then
 	params="$params $EXT_CONFIG"
 fi
 
+/wait-for.sh $ZK_HOSTS:2181 -t 60
+/wait-for.sh $MYSQL_HOST:$MYSQL_PORT -t 60
+/wait-for.sh $REDIS_HOST:$REDIS_PORT -t 60
+/wait-for.sh $INFLUXDB_HOST:$INFLUXDB_PORT -t 60
+
+
 java  -jar /app/tro-web-app-1.0.0-SNAPSHOT.jar $params

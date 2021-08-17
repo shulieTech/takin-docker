@@ -1,4 +1,4 @@
-FROM geekidea/alpine-a:3.10
+FROM alpine-jdk8:1.0
 
 MAINTAINER GuoLong zhangya@shulie.io
 

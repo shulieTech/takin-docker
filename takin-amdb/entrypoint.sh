@@ -43,4 +43,9 @@ if [ ! -z "$CLICKHOUSE_PASSOWORD" ]; then
 	params="$params --config.clickhouse.password=$CLICKHOUSE_PASSOWORD"
 fi
 
+/wait-for.sh $ZK_HOSTS -t 60
+/wait-for.sh $MYSQL_HOST:$MYSQL_PORT -t 60
+/wait-for.sh $INFLUXDB_HOST:$INFLUXDB_PORT -t 60
+/wait-for.sh $CLICKHOUSE_HOST:$CLICKHOUSE_PORT -t 60
+
 java  -jar /app/amdb-app-1.0.4.1-SNAPSHOT.jar $params
