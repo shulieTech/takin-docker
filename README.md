@@ -31,7 +31,9 @@ docker build --force-rm --no-cache -t takin-clickhouse:1.0 .
 
 ```
 docker run -d --name takin-clickhouse \
--e CLICKHOUSE_PASSWORD=shulie@2020 --ulimit nofile=262144:262144 takin-clickhouse:1.0
+-e CLICKHOUSE_PASSWORD=shulie@2020 \
+--ulimit nofile=262144:262144 \
+takin-clickhouse:1.0
 ```
 
 -p 9000:9000 \
@@ -64,7 +66,12 @@ docker run -d --name takin-redis redis --requirepass "shulie@2020"
 ###### 镜像启动
 
 ```
-docker run -d --name takin-influxdb -e INFLUXDB_HTTP_AUTH_ENABLED=true -e INFLUXDB_ADMIN_USER=root -e INFLUXDB_ADMIN_PASSWORD=shulie@2020 -e INFLUXDB_DB=jmeter influxdb:1.8.9
+docker run -d --name takin-influxdb \
+-e INFLUXDB_HTTP_AUTH_ENABLED=true \
+-e INFLUXDB_ADMIN_USER=root \
+-e INFLUXDB_ADMIN_PASSWORD=shulie@2020 \
+-e INFLUXDB_DB=jmeter \
+influxdb:1.8.9
 ```
  -p 8086:8086
  
@@ -89,10 +96,13 @@ docker build --force-rm --no-cache -t takin-nginx:1.0 .
 
 ###### 镜像启动
 ```
-docker run -d --name takin-nginx  -p 80:80 takin-nginx:1.0
+docker run -d --name takin-nginx \
+-e TAKIN_TRO_WEB_URL=localhost \
+-p 8090:80 takin-nginx:1.0
 
 ```
-参数  ：指定密码
+参数 
+TAKIN_TRO_WEB_URL ：指定外网地址，提供给外网使用
 
 ###### docker 镜像导出
 ```
@@ -105,7 +115,7 @@ docker save -o takin-nginx.tar takin-nginx:1.0
 
 ###### 镜像启动
 ```
-docker run -d --name takin-zookeeper zookeeper
+docker run -d --name takin-zookeeper zookeeper:3.5
 
 ```
 
