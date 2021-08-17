@@ -41,7 +41,8 @@ services:
   takin-zookeeper:
     container_name: takin-zookeeper
     image: zookeeper
-
+    ports:
+      - "2181:2181"
 
   takin-tro-web:
     container_name: takin-tro-web
