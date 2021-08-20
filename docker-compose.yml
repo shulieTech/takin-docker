@@ -2,25 +2,31 @@ version: '3.2'
 services:
   takin-mysql:
     container_name: takin-mysql
-    image: takin-mysql:1.0
+    image: takin-mysql
     environment:
       MYSQL_ROOT_PASSWORD: shulie@2020
-
+    networks:
+      mynetwork:
+      
   takin-clickhouse:
     container_name: takin-clickhouse
-    image: takin-clickhouse:1.0
+    image: takin-clickhouse
     ulimits: 
       nofile: 
         soft: 262144
         hard: 262144
     environment:
       CLICKHOUSE_PASSWORD: shulie@2020
-
+    networks:
+      mynetwork:
+      
   takin-redis:
     container_name: takin-redis
     image: redis
     command: redis-server --requirepass shulie@2020
-
+    networks:
+      mynetwork:
+      
   takin-influxdb:
     container_name: takin-influxdb
     image: influxdb:1.8.9
@@ -29,22 +35,33 @@ services:
       INFLUXDB_ADMIN_USER: root
       INFLUXDB_ADMIN_PASSWORD: shulie@2020
       INFLUXDB_DB: jmeter
-
+    networks:
+      mynetwork:
+      
   takin-nginx:
     container_name: takin-nginx
-    image: takin-nginx:1.0
+    image: takin-nginx
+    environment:
+      TAKIN_TRO_WEB_URL: 127.0.0.1
+      TAKIN_TRO_WEB_INNER: takin-tro-web
     ports:
-      - "8090:80"
-
+      - "80:80"
+    depends_on:
+      - takin-tro-web
+    networks:
+      mynetwork:
+      
   takin-zookeeper:
     container_name: takin-zookeeper
-    image: zookeeper
+    image: zookeeper:3.5
     ports:
       - "2181:2181"
-
+    networks:
+      mynetwork:
+      
   takin-tro-web:
     container_name: takin-tro-web
-    image: takin-tro-web:1.0
+    image: takin-tro-web
     ports:
       - "10008:10008"
     environment:
@@ -74,14 +91,12 @@ services:
       - type: volume
         source: data-volume
         target: /app/script
-
-
-
+    networks:
+      mynetwork:
+      
   takin-tro-cloud:
     container_name: takin-tro-cloud
-    image: takin-tro-cloud:1.0
-    ports:
-      - "10010:10010"
+    image: takin-tro-cloud
     environment:
       MYSQL_HOST: takin-mysql
       MYSQL_PORT: 3306
@@ -103,12 +118,12 @@ services:
       - type: volume
         source: data-volume
         target: /app/script
+    networks:
+      mynetwork:
 
   takin-amdb:
     container_name: takin-amdb
-    image: takin-amdb:1.0
-    ports:
-      - "10032:10032"
+    image: takin-amdb
     environment:
       MYSQL_HOST: takin-mysql
       MYSQL_PORT: 3306
@@ -132,10 +147,12 @@ services:
       - takin-redis
       - takin-influxdb
       - takin-zookeeper
-
+    networks:
+      mynetwork:
+      
   takin-surge-data:
     container_name: takin-surge-data
-    image: takin-surge-data:1.0
+    image: takin-surge-data
     ports:
       - "29900-29999:29900-29999"
     environment:
@@ -155,7 +172,7 @@ services:
       TRO_WEB_HOST: takin-tro-web
       AMDB_HOST: takin-amdb:10032
       ZK_HOSTS: takin-zookeeper:2181
-      HOST_MAP: '{"172.16.0.11":"127.0.0.1"}'
+      HOST_MAP: '{"172.19.0.11":"127.0.0.1"}'
     depends_on:
       - takin-mysql
       - takin-redis
@@ -164,6 +181,17 @@ services:
       - takin-clickhouse
       - takin-tro-web
       - takin-amdb
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.11
 
 volumes:
   data-volume:
+  
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.19.1.0/24"
