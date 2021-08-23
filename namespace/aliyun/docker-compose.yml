@@ -42,7 +42,7 @@ services:
     container_name: takin-nginx
     image: registry.cn-hangzhou.aliyuncs.com/shulie-takin/takin-nginx
     environment:
-      TAKIN_TRO_WEB_URL: 127.0.0.1
+      TAKIN_TRO_WEB_URL: 192.168.1.220
       TAKIN_TRO_WEB_INNER: takin-tro-web
     ports:
       - "80:80"
@@ -64,6 +64,7 @@ services:
     image: registry.cn-hangzhou.aliyuncs.com/shulie-takin/takin-tro-web
     ports:
       - "10008:10008"
+#      - "5005:5005"
     environment:
       MYSQL_HOST: takin-mysql
       MYSQL_PORT: 3306
@@ -79,7 +80,8 @@ services:
       TRO_CLOUD_HOST: takin-tro-cloud:10010
       AMDB_HOST: http://takin-amdb:10032
       ZK_HOSTS: takin-zookeeper:2181
-      EXT_CONFIG: 1234=12123
+#      DEBUG: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+      EXT_CONFIG: 1=2
     depends_on:
       - takin-mysql
       - takin-redis
@@ -96,6 +98,8 @@ services:
       
   takin-tro-cloud:
     container_name: takin-tro-cloud
+#    ports:
+#      - "5006:5006"
     image: registry.cn-hangzhou.aliyuncs.com/shulie-takin/takin-tro-cloud
     environment:
       MYSQL_HOST: takin-mysql
@@ -110,6 +114,7 @@ services:
       INFLUXDB_USERNAME: root
       INFLUXDB_PASSOWORD: shulie@2020
       EXT_CONFIG: 1234=12123
+#      DEBUG: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006
     depends_on:
       - takin-mysql
       - takin-redis
@@ -138,7 +143,7 @@ services:
       INFLUXDB_PASSOWORD: shulie@2020
       CLICKHOUSE_HOST: takin-clickhouse
       CLICKHOUSE_PORT: 8123
-      CLICKHOUSE_USERNAME: root
+      CLICKHOUSE_USERNAME: default
       ICLICKHOUSE_PASSOWORD: shulie@2020
       ZK_HOSTS: takin-zookeeper:2181
       EXT_CONFIG: 1234=12123
@@ -164,6 +169,7 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSOWORD: shulie@2020
       CLICKHOUSE_HOST: takin-clickhouse:8123
+      CLICKHOUSE_USERNAME: default
       CLICKHOUSE_PASSOWORD: shulie@2020
       INFLUXDB_HOST: takin-influxdb:8086
       INFLUXDB_PORT: 8086
@@ -172,7 +178,7 @@ services:
       TRO_WEB_HOST: takin-tro-web
       AMDB_HOST: takin-amdb:10032
       ZK_HOSTS: takin-zookeeper:2181
-      HOST_MAP: '{"172.19.0.11":"127.0.0.1"}'
+      HOST_MAP: '{"172.19.0.11":"192.168.1.220"}'
     depends_on:
       - takin-mysql
       - takin-redis
@@ -194,4 +200,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: "172.19.1.0/24"
+        - subnet: "172.19.0.0/24"
