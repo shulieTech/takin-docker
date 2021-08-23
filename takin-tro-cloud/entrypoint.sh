@@ -33,12 +33,8 @@ if [ ! -z "$REDIS_PASSWORD" ]; then
 	params="$params --resource.redis.password=$REDIS_PASSWORD"
 fi
 
-if [ ! -z "$INFLUXDB_HOST" ]; then
-	params="$params --resource.influxdb.host=$INFLUXDB_HOST"
-fi
-
-if [ ! -z "$INFLUXDB_PORT" ]; then
-	params="$params --resource.influxdb.port=$INFLUXDB_PORT"
+if [[ ! -z "$INFLUXDB_HOST" && ! -z "$INFLUXDB_PORT" ]]; then
+        params="$params --resource.influxdb.url=http://$INFLUXDB_HOST:$INFLUXDB_PORT"
 fi
 
 if [ ! -z "$INFLUXDB_USERNAME" ]; then
@@ -57,4 +53,4 @@ fi
 /wait-for.sh $REDIS_HOST:$REDIS_PORT -t 60
 /wait-for.sh $INFLUXDB_HOST:$INFLUXDB_PORT -t 60
 
-java  -jar /app/tro-cloud-app-1.0.0-SNAPSHOT.jar $params
+java $DEBUG -jar /app/tro-cloud-app-1.0.0.jar $params

@@ -4,7 +4,7 @@ MAINTAINER GuoLong zhangya@shulie.io
 
 WORKDIR /app
 ENV LANG=C.UTF-8
-ADD tro-web-app-1.0.0-SNAPSHOT.jar .
+ADD tro-web-app-1.0.0.jar .
 
 COPY entrypoint.sh /entrypoint.sh
 

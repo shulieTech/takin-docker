@@ -6,7 +6,7 @@ WORKDIR /app
 
 ENV LANG=C.UTF-8
 
-ADD tro-cloud-app-1.0.0-SNAPSHOT.jar .
+ADD tro-cloud-app-1.0.0.jar .
 
 RUN mkdir /app/engine
 

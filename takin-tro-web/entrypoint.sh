@@ -65,4 +65,4 @@ fi
 /wait-for.sh $INFLUXDB_HOST:$INFLUXDB_PORT -t 60
 
 
-java  -jar /app/tro-web-app-1.0.0-SNAPSHOT.jar $params
+java $DEBUG -jar /app/tro-web-app-1.0.0.jar $params
